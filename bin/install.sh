@@ -23,6 +23,7 @@ echo "network.host: 0.0.0.0" >> ~/${BASE_DIR}/elasticsearch-2.3.3/config/elastic
 echo "http.port: 9200" >> ~/${BASE_DIR}/elasticsearch-2.3.3/config/elasticsearch.yml
 
 # Start ElasticSearch
+# export ES_HEAP_SIZE=256m
 nohup ~/${BASE_DIR}/elasticsearch-2.3.3/bin/elasticsearch &
 echo "Starting ElasticSearch..."
 sleep 10
