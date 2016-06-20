@@ -5,8 +5,8 @@ Simple tool which uses public Zonky.cz API and uploads all data to local Elastic
 ### How to install/configure ElasticSearch and Kibana
 
 ```bash
-bin/install-elasticsearch-kibana.sh
-bin/create-elasticsearch-index.sh
+bin/install.sh
+bin/createIndex.sh
 ```
 
 ### How to configure Kibana index
