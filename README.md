@@ -9,7 +9,7 @@ bin/install-elasticsearch-kibana.sh
 bin/create-elasticsearch-index.sh
 ```
 
-### How to analyze data
+### How to configure Kibana index
 
 - Open browser with URL localhost:5601
 - Add `zonky` in Settings > Indices as index name
@@ -19,5 +19,10 @@ bin/create-elasticsearch-index.sh
 ### How to run application
 
 ```bash
-./gradlew clean bootRun
+./gradlew clean test # for tests
+./gradlew clean bootRun # run application
 ```
+
+### How to analyze data
+- Open browser with URL localhost:5601
+- Use `Discover` or `Visualize` tabs to see data
