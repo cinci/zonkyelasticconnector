@@ -79,14 +79,14 @@ public class ElasticSearchConnector {
             if (bulkResponse.hasFailures()) {
                 for (BulkItemResponse i : bulkResponse.getItems()) {
                     if (i.isFailed()) {
-                        log.error("Failed to store item to ElasticSearch: " + i.getFailureMessage());
+                        log.error("Failed to store item from Bulk ID:" + internalBulkId + " to ElasticSearch: " + i.getFailureMessage());
                     }
                 }
             } else {
                 log.info("BulkRequest stored with id: " + internalBulkId + " - total items count: " + loans.size());
             }
         } catch (Exception e) {
-            log.error("Failed to store loan into ElasticSearch", e);
+            log.error("Failed to store loans into ElasticSearch", e);
         } finally {
             if (client != null) {
                 client.close();

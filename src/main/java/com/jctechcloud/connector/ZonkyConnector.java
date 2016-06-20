@@ -66,6 +66,7 @@ public class ZonkyConnector {
             result.addAll(loadLoans(i, loansPerRequest));
         }
 
+        log.info("Total loan count: " + result.size());
         return result;
     }
 

@@ -44,7 +44,6 @@ public class ConnectorAsyncJob {
         }
 
         List<Loan> loans = zonkyConnector.loadAllLoansWithDefaultOrdering();
-        log.info("Total loans size: " + loans.size());
         elasticSearchConnector.storeLoans(loans);
     }
 }
