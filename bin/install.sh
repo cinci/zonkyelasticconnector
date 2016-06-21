@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Kill all processes (mainly for dynamic re-creation)
-ps aux | grep kibana | awk -F ' ' '{ print $2 }' | xargs kill -9
+ps aux | grep "./../node/bin/node ./../src/cli" | awk -F ' ' '{ print $2 }' | xargs kill -9
 ps aux | grep elasticsearch | awk -F ' ' '{ print $2 }' | xargs kill -9
 
 # Root directory
