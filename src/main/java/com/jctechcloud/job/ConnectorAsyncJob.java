@@ -44,6 +44,11 @@ public class ConnectorAsyncJob {
         }
 
         List<Loan> loans = zonkyConnector.loadAllLoansWithDefaultOrdering();
-        elasticSearchConnector.storeLoans(loans);
+        if (loans.size() > 0) {
+            elasticSearchConnector.storeLoans(loans);
+        }
+        else {
+            log.warn("No loans available on marketplace!");
+        }
     }
 }

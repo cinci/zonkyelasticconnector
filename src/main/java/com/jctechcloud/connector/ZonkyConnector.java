@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -102,11 +103,10 @@ public class ZonkyConnector {
         ResponseEntity<Loan[]> response = new RestTemplate()
                 .exchange(loanMarketplaceUrl, HttpMethod.GET, httpEntity, Loan[].class);
 
-        if (response.getBody() == null || response.getBody().length == 0) {
+        if (!isCorrectResponseWithBody(response) || response.getBody().length == 0) {
             return new ArrayList<>();
         }
 
-        logResponse(response);
         return Arrays.asList(response.getBody());
     }
 
@@ -114,7 +114,7 @@ public class ZonkyConnector {
      * Load specific loan detail
      *
      * @param id loan id
-     * @return loan detail
+     * @return loan detail or null
      */
     public Loan loadLoan(Long id) {
         log.info("Requesting loan detail with id: " + id);
@@ -123,6 +123,10 @@ public class ZonkyConnector {
 
         ResponseEntity<Loan> response = new RestTemplate()
                 .exchange(loanDetailUrl + "/" + id.toString(), HttpMethod.GET, httpEntity, Loan.class);
+
+        if (!isCorrectResponseWithBody(response)) {
+            return null;
+        }
 
         return response.getBody();
     }
@@ -139,9 +143,11 @@ public class ZonkyConnector {
         ResponseEntity<Loan[]> response = new RestTemplate()
                 .exchange(loanMarketplaceUrl, HttpMethod.GET, httpEntity, Loan[].class);
 
-        List<String> totalSizeHeaderValues = response.getHeaders().get(RESPONSE_HEADER_TOTAL_SIZE);
+        if (!isCorrectResponseWithBody(response)) {
+            return 0;
+        }
 
-        logResponse(response);
+        List<String> totalSizeHeaderValues = response.getHeaders().get(RESPONSE_HEADER_TOTAL_SIZE);
         if (totalSizeHeaderValues == null || totalSizeHeaderValues.size() < 1) {
             throw new RestClientException("Missing " + RESPONSE_HEADER_TOTAL_SIZE + " header!");
         }
@@ -153,25 +159,6 @@ public class ZonkyConnector {
     }
 
     /**
-     * Log response
-     *
-     * @param response response from server
-     */
-    private void logResponse(ResponseEntity<Loan[]> response) {
-        if (!logFullResponse) {
-            return;
-        }
-
-        log.info("Response status code: " + response.getStatusCode().toString());
-        for (Map.Entry<String, List<String>> header : response.getHeaders().entrySet()) {
-            log.info(header.getKey() + ": " + header.getValue());
-        }
-        for (Loan loan : response.getBody()) {
-            log.info(loan.getName());
-        }
-    }
-
-    /**
      * Get default headers
      *
      * @return headers
@@ -180,5 +167,46 @@ public class ZonkyConnector {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add(REQUEST_USER_AGENT, userAgent);
         return headers;
+    }
+
+    /**
+     * Check if response from server is OK and body is not empty
+     *
+     * @param response response from server
+     * @return true if response has status 200 and body is not null
+     */
+    private boolean isCorrectResponseWithBody(ResponseEntity<?> response) {
+        logResponse(response);
+
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            log.error("Invalid status code: " + response.getStatusCode());
+            return false;
+        }
+
+        if (!response.hasBody()) {
+            log.error("Response body is null!");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Log response
+     *
+     * @param response response from server
+     */
+    private void logResponse(ResponseEntity<?> response) {
+        if (!logFullResponse) {
+            return;
+        }
+
+        log.info("Response status code: " + response.getStatusCode().toString());
+
+        for (Map.Entry<String, List<String>> header : response.getHeaders().entrySet()) {
+            log.info(header.getKey() + ": " + header.getValue());
+        }
+
+        log.info("Response body: " + (response.hasBody() ? response.getBody().toString() : "null"));
     }
 }

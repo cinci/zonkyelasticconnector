@@ -82,12 +82,15 @@ public class ElasticSearchConnector {
                         log.error("Failed to store item from Bulk ID:" + internalBulkId + " to ElasticSearch: " + i.getFailureMessage());
                     }
                 }
-            } else {
+            }
+            else {
                 log.info("BulkRequest stored with id: " + internalBulkId + " - total items count: " + loans.size());
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("Failed to store loans into ElasticSearch", e);
-        } finally {
+        }
+        finally {
             if (client != null) {
                 client.close();
             }

@@ -1,6 +1,6 @@
 # Zonky connector to ElasticSearch
 
-Simple tool which uses public Zonky.cz API and uploads all data to local ElasticSearch for analysing.
+Simple tool which uses public Zonky.cz API and uploads all data to local ElasticSearch for further analysis.
 
 ### How to install/configure ElasticSearch and Kibana
 

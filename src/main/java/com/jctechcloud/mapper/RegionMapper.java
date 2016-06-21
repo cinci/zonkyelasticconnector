@@ -42,7 +42,8 @@ public class RegionMapper {
             }
 
             return mapping[regionIndex];
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             throw new IllegalArgumentException("Unsupported region ID");
         }
     }
