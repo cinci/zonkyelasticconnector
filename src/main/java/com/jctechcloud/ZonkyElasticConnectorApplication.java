@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ZonkyElasticConnectorApplication {
 
     /**
-     * Main
+     * App main
      *
      * @param args arguments
      */

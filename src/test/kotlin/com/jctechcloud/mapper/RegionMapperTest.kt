@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationConfiguration
-import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
 
@@ -17,7 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration
  */
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringApplicationConfiguration(classes = arrayOf(ZonkyElasticConnectorApplication::class))
-@TestPropertySource(locations = arrayOf("classpath:application.test.properties"))
+@ActiveProfiles("test")
 @WebAppConfiguration
 class RegionMapperTest {
 
@@ -26,23 +26,23 @@ class RegionMapperTest {
 
     @Test
     fun verifyFirstRegionIndex() {
-        val regionName = regionMapper.mapRegionIdToRegionName("1")
+        val region = regionMapper.mapRegionIdToRegionName("1")
 
-        Assert.assertEquals("Hlavní město Praha", regionName)
+        Assert.assertEquals("Hlavní město Praha", region.name)
     }
 
     @Test
     fun verifyMiddleRegionIndex() {
-        val regionName = regionMapper.mapRegionIdToRegionName("8")
+        val region = regionMapper.mapRegionIdToRegionName("8")
 
-        Assert.assertEquals("Královéhradecký kraj", regionName)
+        Assert.assertEquals("Královéhradecký kraj", region.name)
     }
 
     @Test
     fun verifyLastRegionIndex() {
-        val regionName = regionMapper.mapRegionIdToRegionName("14")
+        val region = regionMapper.mapRegionIdToRegionName("14")
 
-        Assert.assertEquals("Zlínský kraj", regionName)
+        Assert.assertEquals("Zlínský kraj", region.name)
     }
 
     @Test(expected = IllegalArgumentException::class)

@@ -29,6 +29,7 @@ public class Loan {
     private Integer questionsCount;
     private String region;
     private String regionName;
+    private RegionGeo regionGeo;
     private String mainIncomeType;
     private Date internalDateCreated;
     private Long internalBulkId;
@@ -191,6 +192,14 @@ public class Loan {
 
     public void setRegionName(String regionName) {
         this.regionName = regionName;
+    }
+
+    public RegionGeo getRegionGeo() {
+        return regionGeo;
+    }
+
+    public void setRegionGeo(RegionGeo regionGeo) {
+        this.regionGeo = regionGeo;
     }
 
     public String getMainIncomeType() {

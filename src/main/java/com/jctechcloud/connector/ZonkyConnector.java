@@ -34,22 +34,22 @@ public class ZonkyConnector {
     private static final String REQUEST_HEADER_ORDER_BY = "X-Order";
     private static final String RESPONSE_HEADER_TOTAL_SIZE = "X-Total";
 
-    @Value("${custom.zonky.userAgent}}")
+    @Value("${zonky.userAgent}}")
     private String userAgent;
 
-    @Value("${custom.zonky.defaultOrderByField}")
+    @Value("${zonky.defaultOrderByField}")
     private String defaultOrderByField;
 
-    @Value("${custom.zonky.loansPerRequest}")
+    @Value("${zonky.loansPerRequest}")
     private Integer loansPerRequest;
 
-    @Value("${custom.zonky.logFullResponse}")
+    @Value("${zonky.logFullResponse}")
     private Boolean logFullResponse;
 
-    @Value("${custom.zonky.url.marketplace}")
+    @Value("${zonky.url.marketplace}")
     private String loanMarketplaceUrl;
 
-    @Value("${custom.zonky.url.detail}")
+    @Value("${zonky.url.detail}")
     private String loanDetailUrl;
 
     /**

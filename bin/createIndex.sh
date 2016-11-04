@@ -31,6 +31,7 @@ curl -XPUT http://localhost:9200/zonky -d '
                 "questionsCount" :      { "type" : "integer", "index" : "not_analyzed" },
                 "region" :              { "type" : "string", "index" : "not_analyzed" },
                 "regionName" :          { "type" : "string", "index" : "not_analyzed" },
+                "regionGeo" :           { "type" : "geo_point" },
                 "mainIncomeType" :      { "type" : "string", "index" : "not_analyzed" },
                 "internalDateCreated" : { "format" : "strict_date_optional_time||epoch_millis", "type" : "date" },
                 "internalBulkId" :      { "type" : "long", "index" : "not_analyzed" }
@@ -39,3 +40,6 @@ curl -XPUT http://localhost:9200/zonky -d '
     }
 }
 '
+
+echo ""
+echo "Index created"

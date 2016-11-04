@@ -2,6 +2,8 @@ package com.jctechcloud.connector;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jctechcloud.entity.Loan;
+import com.jctechcloud.entity.Region;
+import com.jctechcloud.entity.RegionGeo;
 import com.jctechcloud.mapper.RegionMapper;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -29,16 +31,16 @@ import java.util.List;
 public class ElasticSearchConnector {
     private static final Logger log = LoggerFactory.getLogger(ElasticSearchConnector.class);
 
-    @Value("${custom.elasticsearch.host}")
+    @Value("${elasticsearch.host}")
     private String elasticSearchHost;
 
-    @Value("${custom.elasticsearch.port}")
+    @Value("${elasticsearch.port}")
     private Integer elasticSearchPort;
 
-    @Value("${custom.elasticsearch.index.name}")
+    @Value("${elasticsearch.index.name}")
     private String indexName;
 
-    @Value("${custom.elasticsearch.type.name}")
+    @Value("${elasticsearch.type.name}")
     private String typeName;
 
     private RegionMapper regionMapper;
@@ -54,17 +56,20 @@ public class ElasticSearchConnector {
      * @param loans list of loans
      */
     public void storeLoans(List<Loan> loans) {
-        Client client = null;
-
-        try {
-            client = getTransportClient();
+        try (Client client = getTransportClient()) {
             BulkRequestBuilder bulkRequestBuilder = client.prepareBulk();
 
             // Prepare bulk operation
             final Long internalBulkId = System.currentTimeMillis();
             final Date internalDateCreated = new Date();
             for (Loan loan : loans) {
-                loan.setRegionName(regionMapper.mapRegionIdToRegionName(loan.getRegion()));
+
+                // Region data
+                Region region = regionMapper.mapRegionIdToRegionName(loan.getRegion());
+                loan.setRegionName(region.getName());
+                loan.setRegionGeo(new RegionGeo(region.getGeoLat(), region.getGeoLon()));
+
+                // Internal data
                 loan.setInternalDateCreated(internalDateCreated);
                 loan.setInternalBulkId(internalBulkId);
 
@@ -73,27 +78,32 @@ public class ElasticSearchConnector {
             }
 
             // Execute
-            BulkResponse bulkResponse = bulkRequestBuilder.get();
-
-            // Check result status
-            if (bulkResponse.hasFailures()) {
-                for (BulkItemResponse i : bulkResponse.getItems()) {
-                    if (i.isFailed()) {
-                        log.error("Failed to store item from Bulk ID:" + internalBulkId + " to ElasticSearch: " + i.getFailureMessage());
-                    }
-                }
-            }
-            else {
-                log.info("BulkRequest stored with id: " + internalBulkId + " - total items count: " + loans.size());
-            }
+            BulkResponse bulkRequestResponse = bulkRequestBuilder.get();
+            checkBulkRequestResult(loans.size(), internalBulkId, bulkRequestResponse);
         }
         catch (Exception e) {
             log.error("Failed to store loans into ElasticSearch", e);
         }
-        finally {
-            if (client != null) {
-                client.close();
+    }
+
+    /**
+     * Check bulk request result
+     *
+     * @param requestSize    bulk request size
+     * @param internalBulkId internal bulk id
+     * @param bulkResponse   bulk response
+     */
+    private void checkBulkRequestResult(Integer requestSize, Long internalBulkId, BulkResponse bulkResponse) {
+        // Check result status
+        if (bulkResponse.hasFailures()) {
+            for (BulkItemResponse i : bulkResponse.getItems()) {
+                if (i.isFailed()) {
+                    log.error("Failed to store item from Bulk ID:" + internalBulkId + " to ElasticSearch: " + i.getFailureMessage());
+                }
             }
+        }
+        else {
+            log.info("BulkRequest stored with id: " + internalBulkId + " - total items count: " + requestSize);
         }
     }
 
