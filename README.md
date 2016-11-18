@@ -26,3 +26,10 @@ bin/createIndex.sh
 ### How to analyze data
 - Open browser with URL localhost:5601
 - Use `Discover` or `Visualize` tabs to see data
+
+### Examples
+
+![alt tag](https://raw.githubusercontent.com/cinci/zonkyelasticconnector/master/img/b.png)
+
+![alt tag](https://raw.githubusercontent.com/cinci/zonkyelasticconnector/master/img/a.png)
+
