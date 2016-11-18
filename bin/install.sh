@@ -46,13 +46,25 @@ nohup ~/${BASE_DIR}/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch &
 echo "Starting ElasticSearch"
 sleep 20
 
+curl -s http://localhost:9200/_cluster/health | grep "number_of_nodes\":1" > /dev/null
+if [ $? != 0 ] ; then
+    echo "Unable to start ElasticSearch! See nohup.out for more information."
+    exit 1
+fi
+
 # Start Kibana
 nohup ~/${BASE_DIR}/kibana-${KIBANA_VERSION}-linux-x86_64/bin/kibana &
 echo "Starting Kibana"
-sleep 10
+sleep 20
+
+curl -s http://localhost:5601 | grep "/app/kibana" > /dev/null
+if [ $? != 0 ] ; then
+    echo "Unable to start Kibana! See nohup.out for more information."
+    exit 1
+fi
 
 echo ""
 echo "ElasticSearch default port: 9200 (9300)"
 echo "Kibana default port: 5601"
 echo ""
-echo "DONE"
+echo "Done"

@@ -4,5 +4,7 @@
 *.ear
 *.log
 
+nohup.out
+
 .idea/
 build/
