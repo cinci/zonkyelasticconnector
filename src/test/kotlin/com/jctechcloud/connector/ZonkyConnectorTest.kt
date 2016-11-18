@@ -1,7 +1,6 @@
-package com.jctechcloud.external
+package com.jctechcloud.connector
 
 import com.jctechcloud.ZonkyElasticConnectorApplication
-import com.jctechcloud.connector.ZonkyConnector
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

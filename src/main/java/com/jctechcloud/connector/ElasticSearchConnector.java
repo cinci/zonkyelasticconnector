@@ -10,7 +10,9 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,10 +113,12 @@ public class ElasticSearchConnector {
      * Initialize ElasticSearch client
      *
      * @return client
-     * @throws UnknownHostException
+     * @throws UnknownHostException unknown host exception
      */
     private TransportClient getTransportClient() throws UnknownHostException {
-        return TransportClient.builder().build().addTransportAddress(
-                new InetSocketTransportAddress(InetAddress.getByName(elasticSearchHost), elasticSearchPort));
+
+        return new PreBuiltTransportClient(Settings.EMPTY)
+                .addTransportAddress(new InetSocketTransportAddress(
+                        InetAddress.getByName(elasticSearchHost), elasticSearchPort));
     }
 }
